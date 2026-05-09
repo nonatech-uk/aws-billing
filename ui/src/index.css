@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-border: #e4e7eb;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-good: #15803d;
+  --color-bad: #b91c1c;
+}
+
+html, body, #root { height: 100%; }
+body { background: var(--color-bg); color: var(--color-text); font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; }
+.tabular { font-variant-numeric: tabular-nums; }

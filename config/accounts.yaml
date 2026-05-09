@@ -1,0 +1,57 @@
+# AWS account map.
+#
+# `billing: org`      — pulled via Cost Explorer in the mgmt account (consolidated bill).
+# `billing: separate` — pulled via Cost Explorer using the account's own profile (invoiced separately).
+#
+# Source: aws-account-maintenance/clients/*.yaml (one-time snapshot).
+accounts:
+  - account_id: "975363675991"
+    slug: "nonatech-services"
+    name: "NonaTech Services (mgmt)"
+    billing: org
+    monthly_budget_usd: 50
+  - account_id: "257016720800"
+    slug: "albury-parish-council"
+    name: "Albury Parish Council"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "017147418967"
+    slug: "zermatt-ski-service"
+    name: "Zermatt Ski Service"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "106737697537"
+    slug: "loxhill-livery"
+    name: "Loxhill Livery"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "325460141928"
+    slug: "chance-for-nepal"
+    name: "Chance For Nepal"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "646044944873"
+    slug: "mees-only"
+    name: "Mees Only"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "791554407203"
+    slug: "zermatt-apartments"
+    name: "Zermatt Apartments"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "796793347768"
+    slug: "guildford-hash-house-harriers"
+    name: "Guildford Hash House Harriers"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "918848293035"
+    slug: "ewhurst-parish-council"
+    name: "Ewhurst Parish Council"
+    billing: org
+    monthly_budget_usd: 10
+  - account_id: "519904985655"
+    slug: "tony-shakesby"
+    name: "Tony Shakesby"
+    billing: separate
+    monthly_budget_usd: 10

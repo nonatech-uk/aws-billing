@@ -1,0 +1,10 @@
+[Unit]
+Description=Run aws-billing sync daily at 4am
+
+[Timer]
+OnCalendar=*-*-* 04:00:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

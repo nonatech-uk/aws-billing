@@ -1,0 +1,11 @@
+[Unit]
+Description=aws-billing daily Cost Explorer sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/podman exec aws-billing python scripts/daily_sync.py
+TimeoutStartSec=600
+StandardOutput=journal
+StandardError=journal

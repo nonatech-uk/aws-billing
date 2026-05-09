@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+asyncpg
+authlib
+itsdangerous
+httpx
+pydantic
+pydantic-settings
+boto3
+pyyaml
+python-dotenv
