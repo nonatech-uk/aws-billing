@@ -52,7 +52,8 @@ async def get_services(
     pool: asyncpg.Pool, account_id: str, month: date
 ) -> list[dict]:
     sql = """
-        SELECT service, cost_usd::float8 AS cost_usd
+        SELECT service, cost_usd::float8 AS cost_usd,
+               usage_qty::float8 AS usage_qty, usage_unit
         FROM service_cost
         WHERE account_id = $1 AND month = $2
         ORDER BY cost_usd DESC

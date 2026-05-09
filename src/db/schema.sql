@@ -34,3 +34,6 @@ CREATE TABLE IF NOT EXISTS sync_run (
 );
 
 CREATE INDEX IF NOT EXISTS idx_monthly_cost_month ON monthly_cost(month);
+
+ALTER TABLE service_cost ADD COLUMN IF NOT EXISTS usage_qty numeric(14,4);
+ALTER TABLE service_cost ADD COLUMN IF NOT EXISTS usage_unit text;

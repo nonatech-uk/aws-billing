@@ -33,6 +33,8 @@ export type ServiceRow = {
   service: string
   cost_usd: number
   pct: number
+  usage_qty?: number | null
+  usage_unit?: string | null
 }
 
 export type SummaryAccount = {

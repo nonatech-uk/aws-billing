@@ -15,7 +15,12 @@ import asyncpg
 import yaml
 
 from config.settings import settings
-from src.ingestion.cost_explorer import fetch_account_costs, fetch_org_costs
+from src.ingestion.cost_explorer import (
+    fetch_account_costs,
+    fetch_account_usage,
+    fetch_org_costs,
+    fetch_org_usage,
+)
 
 _log = logging.getLogger(__name__)
 _ACCOUNTS_PATH = Path(__file__).resolve().parents[2] / "config" / "accounts.yaml"
@@ -52,9 +57,11 @@ async def _write_month(
     account_id: str,
     month: date,
     services: dict[str, float],
+    usage: dict[str, tuple[float, str]] | None = None,
 ) -> None:
     gross = sum(c for c in services.values() if c > 0)
     net = sum(services.values())
+    usage = usage or {}
     async with pool.acquire() as conn:
         async with conn.transaction():
             await conn.execute(
@@ -79,15 +86,20 @@ async def _write_month(
             for service, cost in services.items():
                 if cost == 0:
                     continue
+                qty_unit = usage.get(service)
+                qty = qty_unit[0] if qty_unit else None
+                unit = qty_unit[1] if qty_unit else None
                 await conn.execute(
                     """
-                    INSERT INTO service_cost (account_id, month, service, cost_usd)
-                    VALUES ($1, $2, $3, $4)
+                    INSERT INTO service_cost (account_id, month, service, cost_usd, usage_qty, usage_unit)
+                    VALUES ($1, $2, $3, $4, $5, $6)
                     """,
                     account_id,
                     month,
                     service,
                     cost,
+                    qty,
+                    unit,
                 )
 
 
@@ -102,14 +114,17 @@ async def sync_month(pool: asyncpg.Pool, month: date) -> None:
     if org_accounts:
         _log.info("CE org profile %s for %s", settings.aws_profile_org, month)
         org_data = fetch_org_costs(settings.aws_profile_org, month)
+        org_usage = fetch_org_usage(settings.aws_profile_org, month)
         for account_id in org_accounts:
             services = org_data.get(account_id, {})
-            await _write_month(pool, account_id, month, services)
+            usage = org_usage.get(account_id, {})
+            await _write_month(pool, account_id, month, services, usage)
 
     for a in separate_accounts:
         _log.info("CE separate profile %s for %s (%s)", settings.aws_profile_separate, month, a["slug"])
         services = fetch_account_costs(settings.aws_profile_separate, month)
-        await _write_month(pool, a["account_id"], month, services)
+        usage = fetch_account_usage(settings.aws_profile_separate, month)
+        await _write_month(pool, a["account_id"], month, services, usage)
 
 
 async def start_sync_run(pool: asyncpg.Pool) -> int:

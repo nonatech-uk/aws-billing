@@ -62,7 +62,13 @@ async def get_account_services(
     services = await queries.get_services(get_pool(), account_id, month_date)
     total = sum(s["cost_usd"] for s in services if s["cost_usd"] > 0) or 1
     return [
-        ServiceRow(service=s["service"], cost_usd=s["cost_usd"], pct=s["cost_usd"] / total * 100)
+        ServiceRow(
+            service=s["service"],
+            cost_usd=s["cost_usd"],
+            pct=s["cost_usd"] / total * 100,
+            usage_qty=s.get("usage_qty"),
+            usage_unit=s.get("usage_unit"),
+        )
         for s in services
     ]
 
@@ -105,9 +111,10 @@ async def get_account_services_pdf(
 
     pdf.set_font("Helvetica", "B", 10)
     pdf.set_fill_color(240, 240, 240)
-    pdf.cell(110, 7, "Service", border=1, fill=True)
-    pdf.cell(35, 7, "Cost (USD)", border=1, align="R", fill=True)
-    pdf.cell(35, 7, "% of total", border=1, align="R", fill=True, ln=True)
+    pdf.cell(78, 7, "Service", border=1, fill=True)
+    pdf.cell(45, 7, "Usage", border=1, align="R", fill=True)
+    pdf.cell(30, 7, "Cost (USD)", border=1, align="R", fill=True)
+    pdf.cell(27, 7, "% of total", border=1, align="R", fill=True, ln=True)
 
     pdf.set_font("Helvetica", "", 10)
     if not services:
@@ -115,9 +122,13 @@ async def get_account_services_pdf(
     else:
         for s in services:
             pct = (s["cost_usd"] / total * 100) if total else 0.0
-            pdf.cell(110, 6, s["service"][:60], border=1)
-            pdf.cell(35, 6, f"${s['cost_usd']:,.2f}", border=1, align="R")
-            pdf.cell(35, 6, f"{pct:.1f}%", border=1, align="R", ln=True)
+            qty = s.get("usage_qty")
+            unit = s.get("usage_unit")
+            usage_label = f"{qty:,.2f} {unit}" if qty is not None and unit else ""
+            pdf.cell(78, 6, s["service"][:48], border=1)
+            pdf.cell(45, 6, usage_label, border=1, align="R")
+            pdf.cell(30, 6, f"${s['cost_usd']:,.2f}", border=1, align="R")
+            pdf.cell(27, 6, f"{pct:.1f}%", border=1, align="R", ln=True)
 
     pdf.ln(6)
     pdf.set_font("Helvetica", "I", 8)

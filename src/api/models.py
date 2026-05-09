@@ -40,6 +40,8 @@ class ServiceRow(BaseModel):
     service: str
     cost_usd: float
     pct: float
+    usage_qty: float | None = None
+    usage_unit: str | None = None
 
 
 class SummaryAccount(BaseModel):

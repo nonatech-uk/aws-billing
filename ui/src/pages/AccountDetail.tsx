@@ -108,6 +108,7 @@ export default function AccountDetail() {
           <thead className="bg-[var(--color-bg)] text-[var(--color-text-muted)] text-xs uppercase tracking-wide">
             <tr>
               <th className="text-left px-4 py-2">Service</th>
+              <th className="text-right px-4 py-2">Usage</th>
               <th className="text-right px-4 py-2">Cost</th>
               <th className="text-right px-4 py-2">% of total</th>
             </tr>
@@ -116,6 +117,11 @@ export default function AccountDetail() {
             {services.data?.map((s) => (
               <tr key={s.service} className="border-t border-[var(--color-border)]">
                 <td className="px-4 py-2">{s.service}</td>
+                <td className="px-4 py-2 text-right tabular text-[var(--color-text-muted)]">
+                  {s.usage_qty != null && s.usage_unit
+                    ? `${s.usage_qty.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${s.usage_unit}`
+                    : ''}
+                </td>
                 <td className="px-4 py-2 text-right tabular">{fmtMoney(s.cost_usd)}</td>
                 <td className="px-4 py-2 text-right tabular text-[var(--color-text-muted)]">
                   {s.pct.toFixed(1)}%
@@ -124,7 +130,7 @@ export default function AccountDetail() {
             ))}
             {services.data && services.data.length === 0 && (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-[var(--color-text-muted)]">
+                <td colSpan={4} className="px-4 py-8 text-center text-[var(--color-text-muted)]">
                   No data for {month}.
                 </td>
               </tr>
