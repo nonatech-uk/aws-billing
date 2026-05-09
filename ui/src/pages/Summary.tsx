@@ -72,7 +72,7 @@ export default function Summary() {
               <XAxis dataKey="month" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} />
               <Tooltip
-                formatter={(v: number) => `$${v.toFixed(2)}`}
+                formatter={(v) => `$${Number(v ?? 0).toFixed(2)}`}
                 contentStyle={{ borderRadius: 6, border: '1px solid var(--color-border)' }}
               />
               {slugs.map((slug, i) => (

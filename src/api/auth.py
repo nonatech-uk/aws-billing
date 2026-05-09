@@ -126,8 +126,8 @@ async def callback(request: Request):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, f"OAuth error: {e}")
 
     userinfo = token.get("userinfo") or {}
-    # Group claim — Keycloak emits as `groups: [...]` if mapper configured.
-    groups = userinfo.get("groups") or []
+    # Read from a dedicated claim to avoid colliding with realm `groups` mappers.
+    groups = userinfo.get("aws_billing_groups") or []
     if not isinstance(groups, list):
         groups = [groups]
 

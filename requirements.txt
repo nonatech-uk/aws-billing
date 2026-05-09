@@ -9,3 +9,4 @@ pydantic-settings
 boto3
 pyyaml
 python-dotenv
+fpdf2

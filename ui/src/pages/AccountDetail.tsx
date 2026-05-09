@@ -14,14 +14,16 @@ import { fmtMoney } from '../components/common/Money'
 import StatCard from '../components/common/StatCard'
 import { useAccount, useServices } from '../hooks/queries'
 
-function ymToday() {
+function ymLastFullMonth() {
   const d = new Date()
+  d.setDate(1)
+  d.setMonth(d.getMonth() - 1)
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
 export default function AccountDetail() {
   const { accountId } = useParams<{ accountId: string }>()
-  const [month, setMonth] = useState<string>(ymToday())
+  const [month, setMonth] = useState<string>(ymLastFullMonth())
   const account = useAccount(accountId)
   const services = useServices(accountId, month)
 
@@ -79,7 +81,7 @@ export default function AccountDetail() {
               <XAxis dataKey="month" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} />
               <Tooltip
-                formatter={(v: number) => `$${v.toFixed(2)}`}
+                formatter={(v) => `$${Number(v ?? 0).toFixed(2)}`}
                 contentStyle={{ borderRadius: 6, border: '1px solid var(--color-border)' }}
               />
               <Line type="monotone" dataKey="cost" stroke="var(--color-accent)" strokeWidth={2} dot />
@@ -91,7 +93,16 @@ export default function AccountDetail() {
       <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)]">
           <h2 className="text-sm font-semibold">Service breakdown</h2>
-          <MonthPicker value={month} onChange={setMonth} />
+          <div className="flex items-center gap-2">
+            <a
+              href={`/api/v1/accounts/${accountId}/services.pdf?month=${month}`}
+              className="text-xs px-2 py-1 border border-[var(--color-border)] rounded-md hover:bg-[var(--color-bg)]"
+              title="Download this month's breakdown as PDF"
+            >
+              Download PDF
+            </a>
+            <MonthPicker value={month} onChange={setMonth} />
+          </div>
         </div>
         <table className="w-full text-sm">
           <thead className="bg-[var(--color-bg)] text-[var(--color-text-muted)] text-xs uppercase tracking-wide">
